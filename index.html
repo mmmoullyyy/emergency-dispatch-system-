@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+<link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Dispatch Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- ═══════════════ DISPATCH FORM PAGE ═══════════════ -->
+<div class="page active" id="pg-form">
+
+<div class="topbar">
+  <div class="topbar-l"><span><span class="ldot"></span>DISPATCH CENTRE — ACTIVE</span><span style="color:rgba(255,255,255,.3)">|</span><span>NATIONAL EMERGENCY RESPONSE AUTHORITY</span></div>
+  <span id="clock1" style="color:rgba(255,255,255,.45)">—</span>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="white"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></div>
+    <div><div class="logo-name">Emergency Dispatch System</div><div class="logo-dept">Integrated Command &amp; Control Centre</div></div>
+  </div>
+  <div class="hdr-r">
+    <div class="badge-on"><div class="bdot"></div>System Online</div>
+    <div class="vdiv"></div>
+    <button class="nav-btn active" onclick="showPage('pg-form')">📋 New Dispatch</button>
+    <button class="nav-btn" onclick="showPage('pg-records')">🗂 Records <span id="rec-count-badge" style="background:rgba(255,255,255,.15);border-radius:10px;padding:1px 7px;font-size:10px;margin-left:2px">0</span></button>
+  </div>
+</header>
+
+<div class="ph">
+  <div class="ph-inner">
+    <div>
+      <div class="breadcrumb">Dashboard <span>›</span> Incident Management <span>›</span> New Dispatch Request</div>
+      <div class="ph-title">Incident Dispatch Form</div>
+      <div class="ph-sub">Complete all required fields accurately. Incorrect information may delay emergency response.</div>
+    </div>
+    <div class="ref-badge"><div class="ref-lbl">Form Reference</div><div class="ref-val" id="form-ref">IDF-—</div></div>
+  </div>
+</div>
+
+<main>
+<div class="form-grid">
+
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">1</div><div class="sec-title">Victim / Caller Details</div><div class="sec-line"></div></div>
+    <div class="fg" id="fg-name">
+      <label>Full Name <span class="req">*</span></label>
+      <input type="text" id="v-name" placeholder="Enter victim's full name">
+      <div class="ferr">This field is required.</div>
+    </div>
+    <div class="two-col">
+      <div class="fg" id="fg-age">
+        <label>Age <span class="req">*</span></label>
+        <input type="number" id="v-age" placeholder="e.g. 34" min="0" max="120">
+        <div class="ferr">Enter a valid age.</div>
+      </div>
+      <div class="fg" id="fg-gender">
+        <label>Gender <span class="req">*</span></label>
+        <select id="v-gender">
+          <option value="">— Select —</option>
+          <option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
+        </select>
+        <div class="ferr">Required.</div>
+      </div>
+    </div>
+    <div class="fg" id="fg-loc">
+      <label>Incident Location <span class="req">*</span></label>
+      <input type="text" id="v-loc" placeholder="Street, landmark, city or GPS coordinates">
+      <div class="fhint">Be as specific as possible to minimise response time.</div>
+      <div class="ferr">Location is required.</div>
+    </div>
+    <div class="fg">
+      <label>Caller Contact Number</label>
+      <input type="text" id="v-contact" placeholder="Optional — for follow-up communication">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">2</div><div class="sec-title">Incident Description</div><div class="sec-line"></div></div>
+    <div class="fg" id="fg-prob">
+      <label>Nature of Emergency <span class="req">*</span></label>
+      <textarea id="v-prob" placeholder="Describe the emergency — symptoms, injuries, number of casualties, situation on ground..."></textarea>
+      <div class="ferr">Please describe the emergency.</div>
+    </div>
+    <div class="fg">
+      <label>Severity Level <span class="req">*</span></label>
+      <div class="sev-row">
+        <button class="sev-btn" data-level="low" onclick="setSev(this)"><span>🟢</span>Low</button>
+        <button class="sev-btn" data-level="medium" onclick="setSev(this)"><span>🟡</span>Moderate</button>
+        <button class="sev-btn active" data-level="high" onclick="setSev(this)"><span>🔴</span>Critical</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">3</div><div class="sec-title">Dispatch Unit Assignment</div><div class="sec-line"></div></div>
+    <div class="unit-grid">
+      <div class="unit-card selected" data-unit="Ambulance" onclick="toggleUnit(this)">
+        <div class="uicon">🚑</div><div><div class="uname">Ambulance</div><div class="udesc">Medical response</div></div><div class="uchk"></div>
+      </div>
+      <div class="unit-card" data-unit="Police Unit" onclick="toggleUnit(this)">
+        <div class="uicon">🚔</div><div><div class="uname">Police Unit</div><div class="udesc">Law enforcement</div></div><div class="uchk"></div>
+      </div>
+      <div class="unit-card" data-unit="Fire Brigade" onclick="toggleUnit(this)">
+        <div class="uicon">🚒</div><div><div class="uname">Fire Brigade</div><div class="udesc">Fire &amp; rescue</div></div><div class="uchk"></div>
+      </div>
+      <div class="unit-card" data-unit="Disaster Response" onclick="toggleUnit(this)">
+        <div class="uicon">⛑️</div><div><div class="uname">Disaster Team</div><div class="udesc">NDRF / heavy rescue</div></div><div class="uchk"></div>
+      </div>
+      <div class="unit-card" data-unit="Traffic Police" onclick="toggleUnit(this)">
+        <div class="uicon">🚦</div><div><div class="uname">Traffic Police</div><div class="udesc">Road management</div></div><div class="uchk"></div>
+      </div>
+      <div class="unit-card" data-unit="Coast Guard" onclick="toggleUnit(this)">
+        <div class="uicon">⚓</div><div><div class="uname">Coast Guard</div><div class="udesc">Water rescue</div></div><div class="uchk"></div>
+      </div>
+    </div>
+    <div class="unit-err" id="unit-err">Please select at least one dispatch unit.</div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">4</div><div class="sec-title">Response Overview</div><div class="sec-line"></div></div>
+    <div class="fg">
+      <label>Dispatcher Remarks</label>
+      <textarea id="v-notes" placeholder="Additional notes — access codes, hazards, special requirements..." style="min-height:82px"></textarea>
+    </div>
+    <div class="eta-panel">
+      <div><div class="eta-lbl">Estimated Arrival</div><div class="eta-sub" id="eta-sub">Critical priority response</div></div>
+      <div class="eta-val" id="eta-val">— min</div>
+    </div>
+    <div class="preview-box">
+      <div class="prev-lbl">Assigned Units</div>
+      <div class="prev-tags" id="uprev"><span style="font-size:12px;color:var(--muted)">No units selected</span></div>
+    </div>
+  </div>
+
+  <div class="disp-wrap">
+    <button class="disp-btn" id="disp-btn" onclick="doDispatch()">
+      <span style="font-size:16px">🚨</span> Authorise &amp; Send Dispatch
+    </button>
+  </div>
+  <div class="form-footer"><span>⚠</span> All dispatch records are logged and time-stamped. Misuse of this system is a punishable offence under applicable law.</div>
+
+</div>
+</main>
+
+<!-- FORM MODAL -->
+<div class="modal-ov" id="form-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="mhi">✅</div>
+      <div><div class="mtitle">Dispatch Authorised</div><div class="msub">Units have been notified and are en route.</div></div>
+    </div>
+    <div class="modal-body">
+      <div class="track-row"><div class="track-lbl">Incident Reference</div><div class="track-val" id="fm-incid">INC-—</div></div>
+      <table class="sum-tbl" id="fm-tbl"></table>
+      <div class="modal-acts">
+        <button class="btn-close-m" onclick="closeFormModal()">Submit New Report</button>
+        <button class="btn-records" onclick="closeFormModal();showPage('pg-records')">🗂 View All Records</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end pg-form -->
+
+
+<!-- ═══════════════ RECORDS PAGE ═══════════════ -->
+<div class="page" id="pg-records">
+
+<div class="topbar">
+  <div class="topbar-l"><span><span class="ldot"></span>DISPATCH CENTRE — ACTIVE</span><span style="color:rgba(255,255,255,.3)">|</span><span>NATIONAL EMERGENCY RESPONSE AUTHORITY</span></div>
+  <span id="clock2" style="color:rgba(255,255,255,.45)">—</span>
+</div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="white"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></div>
+    <div><div class="logo-name">Emergency Dispatch System</div><div class="logo-dept">Integrated Command &amp; Control Centre</div></div>
+  </div>
+  <div class="hdr-r">
+    <div class="badge-on"><div class="bdot"></div>System Online</div>
+    <div class="vdiv"></div>
+    <button class="nav-btn" onclick="showPage('pg-form')">📋 New Dispatch</button>
+    <button class="nav-btn active" onclick="showPage('pg-records')">🗂 Records <span id="rec-count-badge2" style="background:rgba(255,255,255,.15);border-radius:10px;padding:1px 7px;font-size:10px;margin-left:2px">0</span></button>
+  </div>
+</header>
+
+<div class="ph">
+  <div class="ph-inner">
+    <div>
+      <div class="breadcrumb">Dashboard <span>›</span> Incident Management <span>›</span> Dispatch Records</div>
+      <div class="ph-title">Dispatch Records</div>
+      <div class="ph-sub">Complete log of all submitted emergency dispatch requests.</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-ol" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-dn" onclick="openConfirmClear()">🗑 Clear All</button>
+      <button class="btn btn-pr" onclick="showPage('pg-form')">＋ New Dispatch</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-lbl">Total Incidents</div><div class="stat-val" id="st-total">0</div><div class="stat-sub">All time</div></div>
+    <div class="stat-card crit"><div class="stat-lbl">Critical</div><div class="stat-val" id="st-crit">0</div><div class="stat-sub">High severity</div></div>
+    <div class="stat-card mod"><div class="stat-lbl">Moderate</div><div class="stat-val" id="st-mod">0</div><div class="stat-sub">Medium severity</div></div>
+    <div class="stat-card low"><div class="stat-lbl">Low</div><div class="stat-val" id="st-low">0</div><div class="stat-sub">Low severity</div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="tb-l">
+      <div class="sw"><span class="si">🔍</span><input type="text" id="srch" placeholder="Search by name, location, ID…" oninput="renderRecs()"></div>
+      <select class="fsel" id="f-sev" onchange="renderRecs()"><option value="">All Severities</option><option value="high">Critical</option><option value="medium">Moderate</option><option value="low">Low</option></select>
+      <select class="fsel" id="f-st" onchange="renderRecs()"><option value="">All Statuses</option><option>Active</option><option>Resolved</option><option>Cancelled</option></select>
+      <select class="fsel" id="f-unit" onchange="renderRecs()"><option value="">All Units</option><option>Ambulance</option><option>Police Unit</option><option>Fire Brigade</option><option>Disaster Response</option><option>Traffic Police</option><option>Coast Guard</option></select>
+    </div>
+    <span class="cbadge" id="cbadge">0 records</span>
+  </div>
+
+  <div class="tw">
+    <table id="rec-tbl">
+      <thead><tr>
+        <th onclick="sortBy('id')">Incident ID <span class="si2" id="s-id">↕</span></th>
+        <th onclick="sortBy('name')">Victim <span class="si2" id="s-name">↕</span></th>
+        <th onclick="sortBy('location')">Location <span class="si2" id="s-location">↕</span></th>
+        <th onclick="sortBy('severity')">Severity <span class="si2" id="s-severity">↕</span></th>
+        <th>Units</th>
+        <th onclick="sortBy('eta')">ETA <span class="si2" id="s-eta">↕</span></th>
+        <th onclick="sortBy('status')">Status <span class="si2" id="s-status">↕</span></th>
+        <th onclick="sortBy('timestamp')">Timestamp <span class="si2" id="s-timestamp">↕</span></th>
+        <th style="text-align:center">Actions</th>
+      </tr></thead>
+      <tbody id="rec-body"></tbody>
+    </table>
+    <div id="rec-empty" class="empty" style="display:none">
+      <div class="empty-icon">🗂</div>
+      <div class="empty-title">No Records Found</div>
+      <div class="empty-sub">No dispatch records match your filters, or none have been submitted yet.</div>
+      <button class="btn btn-pr" onclick="showPage('pg-form')">Submit First Dispatch</button>
+    </div>
+    <div class="pag" id="pag"></div>
+  </div>
+</main>
+
+<!-- DETAIL MODAL -->
+<div class="modal-ov" id="dm-ov">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-hdr" style="justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="mhi">📋</div>
+        <div><div class="mtitle" id="dm-title">Incident Details</div><div class="msub" id="dm-sub">—</div></div>
+      </div>
+      <button class="mclose-x" onclick="closeDM()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="dm-grid" id="dm-grid"></div>
+      <div class="mfooter">
+        <button class="btn-close-m" style="flex:1" onclick="closeDM()">Close</button>
+        <button class="btn-records" style="flex:1" onclick="closeDM();showPage('pg-form')">＋ New Dispatch</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM CLEAR -->
+<div class="conf-ov" id="conf-ov">
+  <div class="conf-box">
+    <div class="conf-icon">⚠️</div>
+    <div class="conf-title">Clear All Records?</div>
+    <div class="conf-sub">This will permanently delete all dispatch records. This action cannot be undone.</div>
+    <div class="conf-acts">
+      <button class="btn btn-ol" style="flex:1;justify-content:center" onclick="closeConf()">Cancel</button>
+      <button class="btn btn-dn" style="flex:1;justify-content:center" onclick="clearAll()">Yes, Clear All</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS DROPDOWN -->
+<div class="sm" id="status-menu">
+  <div class="so" onclick="setStatus('Active')">🟢 Active</div>
+  <div class="so" onclick="setStatus('Resolved')">⚪ Resolved</div>
+  <div class="so" onclick="setStatus('Cancelled')">🔴 Cancelled</div>
+</div>
+
+</div><!-- end pg-records -->
+
+
+<script src="app.js"></script>
+</body>
+</html>
